@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  defaultBackend:
+    service:
+      name: neopost-ui-srv
+      port:
+        number: 80
+  rules:
+    - host: neopost.io
+      http:
+        paths:
+          - path: /v1/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: neopost-srv
+                port:
+                  number: 8080
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: neopost-ui-srv
+                port:
+                  number: 80
